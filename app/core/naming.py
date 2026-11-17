@@ -64,6 +64,8 @@ def render_template(template: str, fields: Mapping[str, Any]) -> str:
         if field_name not in fields:
             raise ToolError(f"Unknown naming template field {{{field_name}}}", hint=_available(fields))
         value = fields[field_name]
+        if callable(value):  # lazily computed (e.g. dimensions that need the image to be decoded first)
+            value = value()
         if spec:
             if isinstance(value, int) and not isinstance(value, bool) and _PAD_RE.match(spec):
                 parts.append(format(value, spec if spec.endswith("d") else spec + "d"))

@@ -10,8 +10,12 @@ import os
 import time
 from collections.abc import Callable, Iterator
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pytest
+
+if TYPE_CHECKING:
+    from app.core.services import Services
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
@@ -35,6 +39,35 @@ def user_dir(tmp_path: Path) -> Path:
     path = tmp_path / "config-user"
     path.mkdir(exist_ok=True)
     return path
+
+
+@pytest.fixture
+def clean_registry() -> Iterator[None]:
+    """Restore the global tool registry (and plugin modules) after a test that registers tools."""
+    import sys
+
+    from app.tools import base
+
+    saved = dict(base._REGISTRY)
+    modules = set(sys.modules)
+    yield
+    base._REGISTRY.clear()
+    base._REGISTRY.update(saved)
+    for name in set(sys.modules) - modules:
+        if name.startswith("lmt_user_plugin_"):
+            del sys.modules[name]
+
+
+@pytest.fixture
+def services(user_dir: Path) -> Iterator[Services]:
+    """A fully discovered object graph (built-in tools only) over the temporary directories."""
+    from app.core.services import Services
+
+    graph = Services.create(
+        user_dir=user_dir, with_history=False, configure_logging=False, user_plugins=False, entry_points=False
+    )
+    yield graph
+    graph.close()
 
 
 @pytest.fixture(scope="session")

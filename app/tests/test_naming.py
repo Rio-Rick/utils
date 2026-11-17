@@ -33,6 +33,20 @@ def test_render_template_basic_and_padding():
     assert render_template("{index:3d}", fields) == "  7"
 
 
+def test_render_template_evaluates_callable_fields_lazily():
+    calls: list[str] = []
+
+    def width() -> int:
+        calls.append("width")
+        return 640
+
+    fields = {"name": "photo", "width": width}
+    assert render_template("{name}", fields) == "photo"
+    assert calls == []  # not used by the template, so never computed
+    assert render_template("{name}_{width:05d}", fields) == "photo_00640"
+    assert calls == ["width"]
+
+
 @pytest.mark.parametrize(
     "template",
     ["{name.__class__}", "{name!r}", "{0}", "{name[0]}", "{missing}", "{", "{name:>10}", "{__import__}"],
