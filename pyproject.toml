@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "linux-media-toolkit"
+version = "0.1.0"
+description = "All-in-one media converter, media processor and utility toolkit for Linux (PySide6, FFmpeg, Pillow)."
+readme = "README.md"
+requires-python = ">=3.12"
+keywords = ["ffmpeg", "image", "video", "converter", "contact-sheet", "pyside6", "linux"]
+classifiers = [
+    "Environment :: X11 Applications :: Qt",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia",
+]
+dependencies = [
+    "PySide6-Essentials>=6.6",
+    "Pillow>=10.1",
+    "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+# Optional backends. The application starts and works without any of them;
+# tools that need one are disabled with an installation hint instead.
+opencv = ["opencv-python-headless>=4.8"]
+svg = ["cairosvg>=2.7"]
+heif = ["pillow-heif>=0.16"]
+dev = ["pytest>=8.0"]
+all = [
+    "opencv-python-headless>=4.8",
+    "cairosvg>=2.7",
+    "pillow-heif>=0.16",
+]
+
+[project.scripts]
+linux-media-toolkit = "app.main:main"
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.setuptools.package-data]
+app = ["resources/**/*", "presets/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["app/tests"]
+addopts = "-ra -q"
+markers = [
+    "ffmpeg: needs a real ffmpeg/ffprobe on PATH (skipped otherwise)",
+    "gui: needs Qt widgets (runs with the offscreen platform)",
+]

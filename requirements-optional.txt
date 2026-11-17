@@ -1,0 +1,5 @@
+# Optional Python backends. Everything works without them; the matching
+# features are disabled (with an install hint) or fall back to other backends.
+opencv-python-headless>=4.8   # video frame extraction fallback when FFmpeg is missing
+cairosvg>=2.7                 # SVG rendering without rsvg-convert / ImageMagick
+pillow-heif>=0.16             # HEIC / HEIF input

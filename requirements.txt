@@ -1,0 +1,5 @@
+# Runtime requirements (Python 3.12+).
+# Optional backends (OpenCV, CairoSVG, pillow-heif) are listed in requirements-optional.txt.
+PySide6-Essentials>=6.6
+Pillow>=10.1
+PyYAML>=6.0

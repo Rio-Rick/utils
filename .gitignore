@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+
+# User configuration is never committed (defaults live in config/defaults)
+config/user/*
+!config/user/.gitkeep
+
+# Packaging artefacts
+*.AppImage
+appimage-build/
+.flatpak-builder/
+flatpak-build/
+
+# Editors / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
